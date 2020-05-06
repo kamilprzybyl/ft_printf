@@ -1,8 +1,4 @@
 #include "ft_printf.h"
-#include <stdarg.h>
-#include <stdio.h>
-
-
 
 int ft_printf(const char *restrict format, ...)
 {
@@ -19,7 +15,7 @@ int ft_printf(const char *restrict format, ...)
     if (!(string_field = malloc(1024 * sizeof(char))))
         return (-1);
 
-    while (format[i] != '\0')
+    while (format[i] != '\0' && ft_bzero(string_field, ft_strlen(string_field)))
     {
         if (format[i] == '%')
         {
@@ -28,7 +24,6 @@ int ft_printf(const char *restrict format, ...)
             {
                 if (format[i] == 's')
                 {
-                    ft_bzero(string_field, ft_strlen(string_field));
                     string_field = va_arg(Va_List, char *);
                     ft_putstr(string_field);
                     i++;
@@ -41,7 +36,6 @@ int ft_printf(const char *restrict format, ...)
                 }
                 else if (format[i] == 'd' )
                 {
-                    ft_bzero(string_field, ft_strlen(string_field));
                     int_field = va_arg(Va_List, int);
                     string_field = ft_itoa(int_field);
                     ft_putstr(string_field);
@@ -52,7 +46,6 @@ int ft_printf(const char *restrict format, ...)
                     i++;
                     if (format[i] == 'f')
                     {
-                        ft_bzero(string_field, ft_strlen(string_field));
                         double_field = va_arg(Va_List, double);
                         string_field = ft_itoa(double_field);
                         ft_putstr(string_field);
@@ -61,7 +54,6 @@ int ft_printf(const char *restrict format, ...)
                 }
                 else if (format[i] == 'p')
                 {
-                    ft_bzero(string_field, ft_strlen(string_field));
                     pointer_field = va_arg(Va_List, long long int);
                     string_field = ft_dec_to_hex(pointer_field);
                     ft_putstr(string_field);
@@ -90,6 +82,8 @@ int ft_printf(const char *restrict format, ...)
 
     return (0);
 }
+
+#include <stdio.h>
 
 int main()
 {
