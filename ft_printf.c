@@ -15,8 +15,9 @@ int ft_printf(const char *restrict format, ...)
     if (!(string_field = malloc(1024 * sizeof(char))))
         return (-1);
 
-    while (format[i] != '\0' && ft_bzero(string_field, ft_strlen(string_field)))
+    while (format[i] != '\0')
     {
+        // ft_bzero(string_field, ft_strlen(string_field));
         if (format[i] == '%')
         {
             i++;
@@ -46,6 +47,7 @@ int ft_printf(const char *restrict format, ...)
                     i++;
                     if (format[i] == 'f')
                     {
+                        /* TO FIX */
                         double_field = va_arg(Va_List, double);
                         string_field = ft_itoa(double_field);
                         ft_putstr(string_field);
@@ -79,30 +81,6 @@ int ft_printf(const char *restrict format, ...)
         }
     }
     va_end(Va_List);
-
-    return (0);
-}
-
-#include <stdio.h>
-
-int main()
-{
-    char name[12] = "James";
-    int age = 21;
-    int i = 0;
-
-    ft_printf("string test - %s\n", name);
-    printf("string test - %s\n", name);
-    ft_printf("integer test - %d\n", age);
-    printf("integer test - %d\n", age);    
-    ft_printf("address test - %p\n", &i);
-    printf("address test - %p\n", &i);
-    ft_printf("modulo character test - %%\n");
-    printf("modulo character test - %%\n");
-    ft_printf("char test - %c\n", 'a');
-    printf("char test - %c\n", 'a');
-    // ft_printf("single modulo test %\n");
-    // printf("single modulo test - %");
 
     return (0);
 }
