@@ -1,245 +1,317 @@
 #include "ft_printf.h"
 #include "stdio.h"
 
+
+void handle_width(t_info *info, char spec)
+{
+    int     j;
+
+    j = 0;
+
+    if (spec == 'p')
+        info->width_number = info->width_number - (ft_strlen(info->res) + 2);
+    else if (spec == 'c')
+        info->width_number = info->width_number - 1;
+    else
+    {
+        info->width_number = info->width_number - ft_strlen(info->res) - info->precision_number;
+        if (info->precision_number > ft_strlen(info->res))
+            info->width_number += ft_strlen(info->res);
+    }
+
+    if (info->is_plus_sign_flag)
+        info->width_number = info->width_number - 1;
+    if (info->is_pound_sign && spec == 'x')
+        info->width_number = info->width_number - 2;
+
+    while (j++ < info->width_number)
+        ft_putchar(' ');
+}
+
+void handle_precision(t_info *info, char spec)
+{
+    int     j;
+    char    *after_dot;
+    
+    j = 0;
+
+    if (spec == 'f')
+    {
+        after_dot = ft_strchr(info->res, '.');
+        info->precision_number = info->precision_number - (ft_strlen(after_dot) - 1);
+
+        // if precision-number is higher than 0 it does the loop at the end so nothing changes but  if it's lower than zero it removes precision-number characters from the end of res
+        while (info->precision_number < 0 && j > info->precision_number)
+        {
+            info->res[ft_strlen(info->res) - 1] = 0;
+            j--;                          
+        }
+    }
+    else
+        info->precision_number = info->precision_number - ft_strlen(info->res);
+    
+    j = 0;
+    while (j++ < info->precision_number)
+        ft_putchar('0');
+}
+
+void handle_hex(t_info *info, va_list va_arg_list)
+{
+    info->unsigned_int_field = va_arg(va_arg_list, unsigned int);
+    info->res = ft_dec_to_hex(info->unsigned_int_field, 0);
+    if (info->is_width)
+        handle_width(info, 'x');
+    if (info->is_pound_sign)
+        ft_putstr("0x");                        
+    if (info->is_precision)
+        handle_precision(info, 'x');
+    ft_putstr(info->res);
+    free(info->res);    
+}
+
+void handle_integer(t_info *info, va_list va_arg_list)
+{
+    info->int_field = va_arg(va_arg_list, int);
+    info->res = ft_itoa(info->int_field);
+
+    if (info->is_width)
+        handle_width(info, 'd');
+    if (info->is_plus_sign_flag)
+        ft_putchar('+');
+    if (info->is_precision)
+        handle_precision(info, 'd');
+
+    ft_putstr(info->res);   
+    free(info->res); 
+}
+
+void handle_octal(t_info *info, va_list va_arg_list)
+{
+    info->unsigned_int_field = va_arg(va_arg_list, unsigned int);
+    info->unsigned_int_field = ft_dec_to_oct(info->unsigned_int_field);
+    info->res = ft_itoa(info->unsigned_int_field);
+    if (info->is_width)
+        handle_width(info, 'o');                
+    if (info->is_pound_sign)
+        ft_prepend(info->res, "0");
+    if (info->is_precision)
+        handle_precision(info, 'o');
+    ft_putstr(info->res); 
+    free(info->res);   
+}
+
+void handle_u_char(t_info *info, va_list va_arg_list)
+{
+    info->unsigned_int_field = va_arg(va_arg_list, unsigned int);
+    info->res = ft_itoa(info->unsigned_int_field);
+
+    if (info->is_width)
+        handle_width(info, 'u');
+    if (info->is_precision)
+        handle_precision(info, 'u');
+    
+    ft_putstr(info->res);
+    free(info->res);    
+}
+
+void handle_heX(t_info *info, va_list va_arg_list)
+{
+    info->unsigned_int_field = va_arg(va_arg_list, unsigned int);
+    info->res = ft_dec_to_hex(info->unsigned_int_field, 1);
+
+    if (info->is_width)
+        handle_width(info, 'X');
+    if (info->is_precision)
+        handle_precision(info, 'X');
+
+    ft_putstr(info->res);
+    free(info->res);    
+}
+
+void handle_f_F(t_info *info, va_list va_arg_list)
+{
+    info->double_field = va_arg(va_arg_list, double);
+    info->res = ft_ftoa(info->double_field);
+
+    if (info->is_width)
+        handle_width(info, 'f');
+    if (info->is_precision)
+        handle_precision(info, 'f');
+
+    ft_putstr(info->res);
+    free(info->res); 
+}
+
+void handle_g_G(t_info *info, va_list va_arg_list)
+{
+    info->double_field = va_arg(va_arg_list, double);
+    info->res = ft_ftoa(info->double_field);
+
+    while (info->res[ft_strlen(info->res) - 1] == '0')
+        info->res[ft_strlen(info->res) - 1] = '\0';
+
+    if (info->is_width)
+        handle_width(info, 'g');
+
+    ft_putstr(info->res);    
+    free(info->res);
+}
+
+void handle_char(t_info *info, va_list va_arg_list)
+{
+    info->char_field = va_arg(va_arg_list, int);
+
+    if (info->is_width)
+        handle_width(info, 'c');
+
+    ft_putchar(info->char_field);    
+}
+
+void handle_string(t_info *info, va_list va_arg_list)
+{
+    info->res = va_arg(va_arg_list, char *);
+
+    if (info->is_width)
+        handle_width(info, 's');
+
+    ft_putstr(info->res);   
+}
+
+void handle_pointer(t_info *info, va_list va_arg_list)
+{
+    info->pointer_field = va_arg(va_arg_list, long long int);
+    info->res = ft_dec_to_hex(info->pointer_field, 0);
+
+    if (info->is_width)
+        handle_width(info, 'p');  
+
+    ft_putstr("0x");
+    ft_putstr(info->res);
+    free(info->res);
+}
+
+void reset_info(t_info *info)
+{
+    info->is_pound_sign = 0;
+    info->is_zero_flag = 0;
+    info->is_plus_sign_flag = 0;
+    info->is_minus_sign_flag = 0;
+    info->is_width = 0;
+    info->is_precision = 0;
+    info->width_number = 0;
+    info->precision_number = 0;
+}
+
+
 int ft_printf(const char *restrict format, ...)
 {
-    va_list         Va_List;
+    va_list         va_arg_list;
+    t_info          info;
     int             i;
-    int             int_field;
-    unsigned int    unsigned_int_field;
-    unsigned char   char_field;
-    char            *string_field;
-    long long int   pointer_field;
-    double          double_field;
-    int             pound_sign;
-    int             zero_flag;
-    int             plus_sign_flag;
-    int             minus_sign_flag;
-    int             width;
-    int             width_number;
-    // char            width_char[100];
-
-    va_start(Va_List, format);
+    
+    va_start(va_arg_list, format);
     i = 0;
-    if (!(string_field = malloc(1024 * sizeof(char))))
-        return (-1);
-    pound_sign = 0;
-    zero_flag = 0;
-    plus_sign_flag = 0;
-    minus_sign_flag = 0;
-    width = 0;
 
     while (format[i] != '\0')
     {
-        // ft_bzero(string_field, ft_strlen(string_field));
         if (format[i] == '%')
         {
+            reset_info(&info);
             i++;
             while (format[i])
             {   
                 if (format[i] == '#')
                 {
-                    pound_sign = 1;
+                    info.is_pound_sign = 1;
                     i++; 
                 }
                 else if (format[i] == '0')
                 {
-                    zero_flag = 1;
+                    info.is_zero_flag = 1;
                     i++;
                 }
                 else if (format[i] == '+')
                 {
-                    plus_sign_flag = 1;
+                    info.is_plus_sign_flag = 1;
                     i++;
                 }
                 else if (format[i] == '-')
                 {
-                    minus_sign_flag = 1;
+                    info.is_minus_sign_flag = 1;
                     i++;
                 }
                 else if (ft_isdigit(format[i]))
                 {
-                    width_number = ft_atoi(&(format[i]));
+                    info.width_number = ft_atoi(&(format[i]));
                     while (ft_isdigit(format[i])) 
                         i++;
-                    width = 1;
+                    info.is_width = 1;
+                }
+                else if (format[i] == '.')
+                {
+                    i++;
+                    info.precision_number = ft_atoi(&(format[i]));
+                    while (ft_isdigit(format[i]))
+                        i++;
+                    info.is_precision = 1;
                 }
                 else if (format[i] == 'd' || format[i] == 'i')
                 {
-                    int_field = va_arg(Va_List, int);
-                    string_field = ft_itoa(int_field);
-                    if (plus_sign_flag)
-                        ft_prepend(string_field, "+");
-                    if (width)
-                    {
-                        width_number = width_number - ft_strlen(string_field);
-                        int cnt = 0;
-                        while (cnt < width_number)  
-                        {
-                            ft_prepend(string_field, " ");
-                            cnt++;
-                        }
-                    }
-                    ft_putstr(string_field);
+                    handle_integer(&info, va_arg_list);
                     i++;
                     break;
                 }
                 else if (format[i] == 'o')
                 {
-                    unsigned_int_field = va_arg(Va_List, unsigned int);
-                    unsigned_int_field = ft_dec_to_oct(unsigned_int_field);
-                    string_field = ft_itoa(unsigned_int_field);
-                    if (pound_sign)
-                        ft_prepend(string_field, "0");
-                    if (width)
-                    {
-                        width_number = width_number - ft_strlen(string_field);
-                        int cnt = 0;
-                        while (cnt < width_number)  
-                        {
-                            ft_prepend(string_field, " ");
-                            cnt++;
-                        }
-                    }                    
-                    ft_putstr(string_field);
+                    handle_octal(&info, va_arg_list);
                     i++;
                     break;
                 }                
                 else if (format[i] == 'u')
                 {
-                    unsigned_int_field = va_arg(Va_List, unsigned int);
-                    string_field = ft_itoa(unsigned_int_field);
-                    if (width)
-                    {
-                        width_number = width_number - ft_strlen(string_field);
-                        int cnt = 0;
-                        while (cnt < width_number)  
-                        {
-                            ft_prepend(string_field, " ");
-                            cnt++;
-                        }
-                    }
-                    ft_putstr(string_field);
+                    handle_u_char(&info, va_arg_list);
                     i++;
                     break;
                 }
                 else if (format[i] == 'x')
                 {
-                    unsigned_int_field = va_arg(Va_List, unsigned int);
-                    string_field = ft_dec_to_hex(unsigned_int_field, 0);
-                    if (pound_sign)
-                        ft_prepend(string_field, "0x");
-                    if (width)
-                    {
-                        width_number = width_number - ft_strlen(string_field);
-                        int cnt = 0;
-                        while (cnt < width_number)  
-                        {
-                            ft_prepend(string_field, " ");
-                            cnt++;
-                        }
-                    }
-                    ft_putstr(string_field);
+                    handle_hex(&info, va_arg_list);
                     i++;
                     break;
                 }
                 else if (format[i] == 'X')
                 {
-                    unsigned_int_field = va_arg(Va_List, unsigned int);
-                    string_field = ft_dec_to_hex(unsigned_int_field, 1);
-                    if (width)
-                    {
-                        width_number = width_number - ft_strlen(string_field);
-                        int cnt = 0;
-                        while (cnt < width_number)  
-                        {
-                            ft_prepend(string_field, " ");
-                            cnt++;
-                        }
-                    }
-                    ft_putstr(string_field);
+                    handle_heX(&info, va_arg_list);
                     i++;
                     break;
                 }
                 else if (format[i] == 'f' || format[i] == 'F')
                 {
-                    double_field = va_arg(Va_List, double);
-                    string_field = ft_ftoa(double_field);
-                    if (width)
-                    {
-                        width_number = width_number - ft_strlen(string_field);
-                        int cnt = 0;
-                        while (cnt < width_number)  
-                        {
-                            ft_prepend(string_field, " ");
-                            cnt++;
-                        }
-                    }
-                    ft_putstr(string_field);
+                    handle_f_F(&info, va_arg_list);
                     i++;
                     break;
                 }                
                 else if (format[i] == 'g' || format[i] == 'G')
                 {
-                    double_field = va_arg(Va_List, double);
-                    string_field = ft_ftoa(double_field);
-                    int len = (ft_strlen(string_field) - 1);
-                    while (string_field[len] == '0')
-                        string_field[len--] = '\0';
-                    if (width)
-                    {
-                        width_number = width_number - ft_strlen(string_field);
-                        int cnt = 0;
-                        while (cnt < width_number)  
-                        {
-                            ft_prepend(string_field, " ");
-                            cnt++;
-                        }
-                    }
-                    ft_putstr(string_field);
+                    handle_g_G(&info, va_arg_list);
                     i++;
                     break;
                 }                
                 else if (format[i] == 'c')
                 {
-                    char_field = va_arg(Va_List, int);
-                    ft_putchar(char_field);
+                    handle_char(&info, va_arg_list);
                     i++;
                     break;
                 }
                 else if (format[i] == 's')
                 {
-                    string_field = va_arg(Va_List, char *);
-                    if (width)
-                    {
-                        width_number = width_number - ft_strlen(string_field);
-                        int cnt = 0;
-                        while (cnt < width_number)  
-                        {
-                            ft_prepend(string_field, " ");
-                            cnt++;
-                        }
-                    }
-                    ft_putstr(string_field);
+                    handle_string(&info, va_arg_list);
                     i++;
                     break;
                 }
                 else if (format[i] == 'p')
                 {
-                    pointer_field = va_arg(Va_List, long long int);
-                    string_field = ft_dec_to_hex(pointer_field, 0);
-                    ft_prepend(string_field, "0x");
-                    if (width)
-                    {
-                        width_number = width_number - ft_strlen(string_field);
-                        int cnt = 0;
-                        while (cnt < width_number)  
-                        {
-                            ft_prepend(string_field, " ");
-                            cnt++;
-                        }
-                    }                    
-                    ft_putstr(string_field);
+                    handle_pointer(&info, va_arg_list);
                     i++;
                     break;
                 }
@@ -264,7 +336,7 @@ int ft_printf(const char *restrict format, ...)
             i++;
         }
     }
-    va_end(Va_List);
+    va_end(va_arg_list);
 
     return (0);
 }
