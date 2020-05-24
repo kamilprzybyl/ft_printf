@@ -70,6 +70,8 @@ void handle_zero_flag(t_info *info, int spec)
     if (info->zero_flag_val > info->precision_val)
         while (j++ < info->zero_flag_val)
             ft_putchar('0');
+    else
+        info->zero_flag_val = 0;
 }
 
 void handle_h(t_info *info, va_list va_arg_list, int spec)
@@ -305,31 +307,18 @@ void handle_integer(t_info *info, va_list va_arg_list)
 {
     handle_lenght_modifier(info, va_arg_list, 'd');
 
-    if (info->is_minus_sign_flag)
-    {
-        if (info->is_zero_flag)
-            handle_zero_flag(info, 'd');
-        if (info->is_plus_sign_flag)
-            ft_putchar('+');
-        if (info->is_precision)
-            handle_precision(info, 'd');
-        ft_putstr(info->res);
-        if (info->is_width)
-            handle_width(info, 'd');
-    }
-    else
-    {
-        if (info->is_zero_flag)
-            handle_zero_flag(info, 'd');
-        if (info->is_width)
-            handle_width(info, 'd');
-        if (info->is_plus_sign_flag)
-            ft_putchar('+');
-        if (info->is_precision)
-            handle_precision(info, 'd');
-        ft_putstr(info->res);
-    }
-       
+    if (info->is_zero_flag)
+        handle_zero_flag(info, 'd');
+    if (!info->is_minus_sign_flag && info->is_width)
+        handle_width(info, 'd');
+    if (info->is_plus_sign_flag)
+        ft_putchar('+');
+    if (info->is_precision)
+        handle_precision(info, 'd');
+    ft_putstr(info->res);
+    if (info->is_minus_sign_flag && info->is_width)
+        handle_width(info, 'd');
+    
     free(info->res); 
 }
 
@@ -337,30 +326,17 @@ void handle_octal(t_info *info, va_list va_arg_list)
 {
     handle_lenght_modifier(info, va_arg_list, 'o');
 
-    if (info->is_minus_sign_flag)
-    {
-        if (info->is_zero_flag)
-            handle_zero_flag(info, 'o');
-        if (info->is_pound_sign)
-            ft_putchar('0');
-        if (info->is_precision)
-            handle_precision(info, 'o');
-        ft_putstr(info->res); 
-        if (info->is_width)
-            handle_width(info, 'o');                
-    }
-    else
-    {
-        if (info->is_zero_flag)
-            handle_zero_flag(info, 'o');
-        if (info->is_width)
-            handle_width(info, 'o');                
-        if (info->is_pound_sign)
-            ft_putchar('0');
-        if (info->is_precision)
-            handle_precision(info, 'o');
-        ft_putstr(info->res); 
-    }
+    if (info->is_zero_flag)
+        handle_zero_flag(info, 'o');
+    if (!info->is_minus_sign_flag && info->is_width)
+        handle_width(info, 'o');                
+    if (info->is_pound_sign)
+        ft_putchar('0');
+    if (info->is_precision)
+        handle_precision(info, 'o');
+    ft_putstr(info->res); 
+    if (info->is_minus_sign_flag && info->is_width)
+        handle_width(info, 'o');   
 
     free(info->res);   
 }
@@ -368,27 +344,16 @@ void handle_octal(t_info *info, va_list va_arg_list)
 void handle_u_char(t_info *info, va_list va_arg_list)
 {
     handle_lenght_modifier(info, va_arg_list, 'u');
-    
-    if (info->is_minus_sign_flag)
-    {
-        if (info->is_zero_flag)
-            handle_zero_flag(info, 'u');
-        if (info->is_precision)
-            handle_precision(info, 'u');
-        ft_putstr(info->res);
-        if (info->is_width)
-            handle_width(info, 'u');
-    }
-    else
-    {
-        if (info->is_zero_flag)
-            handle_zero_flag(info, 'u');
-        if (info->is_width)
-            handle_width(info, 'u');
-        if (info->is_precision)
-            handle_precision(info, 'u');
-        ft_putstr(info->res);
-    }
+
+    if (!info->is_minus_sign_flag && info->is_zero_flag)
+        handle_zero_flag(info, 'u');
+    if (info->is_width)
+        handle_width(info, 'u');
+    if (info->is_precision)
+        handle_precision(info, 'u');
+    ft_putstr(info->res);
+    if (info->is_minus_sign_flag && info->is_zero_flag)
+        handle_zero_flag(info, 'u');
 
     free(info->res);    
 }
@@ -397,30 +362,17 @@ void handle_hex(t_info *info, va_list va_arg_list)
 {
     handle_lenght_modifier(info, va_arg_list, 'x');
 
-    if (info->is_minus_sign_flag)
-    {
-        if (info->is_pound_sign && ft_strcmp(info->res, "0")) // to fix
-            ft_putstr("0x");                        
-        if (info->is_zero_flag)
-            handle_zero_flag(info, 'x');
-        if (info->is_precision)
-            handle_precision(info, 'x');
-        ft_putstr(info->res);
-        if (info->is_width)
-            handle_width(info, 'x');
-    }    
-    else
-    {
-        if (info->is_width)
-            handle_width(info, 'x');
-        if (info->is_pound_sign && ft_strcmp(info->res, "0")) // to fix
-            ft_putstr("0x");                        
-        if (info->is_zero_flag)
-            handle_zero_flag(info, 'x');
-        if (info->is_precision)
-            handle_precision(info, 'x');
-        ft_putstr(info->res);
-    }
+    if (!info->is_minus_sign_flag && info->is_width)
+        handle_width(info, 'x');
+    if (info->is_pound_sign && ft_strcmp(info->res, "0")) // to fix
+        ft_putstr("0x");                        
+    if (info->is_zero_flag)
+        handle_zero_flag(info, 'x');
+    if (info->is_precision)
+        handle_precision(info, 'x');
+    ft_putstr(info->res);
+    if (info->is_minus_sign_flag && info->is_width)
+        handle_width(info, 'x');
 
     free(info->res);    
 }
@@ -429,72 +381,43 @@ void handle_heX(t_info *info, va_list va_arg_list)
 {
     handle_lenght_modifier(info, va_arg_list, 'X');
 
-    if (info->is_minus_sign_flag)
-    {
-        if (info->is_pound_sign)
-            ft_putstr("0X");   
-        if (info->is_zero_flag)
-            handle_zero_flag(info, 'X');
-        if (info->is_precision)
-            handle_precision(info, 'X');
-        ft_putstr(info->res);
-        if (info->is_width)
-            handle_width(info, 'X');
-    }
-    else
-    {
-        if (info->is_zero_flag)
-            handle_zero_flag(info, 'X');
-        if (info->is_width)
-            handle_width(info, 'X');
-        if (info->is_pound_sign)
-            ft_putstr("0X");   
-        if (info->is_precision)
-            handle_precision(info, 'X');
-        ft_putstr(info->res);
-    }
+    if (info->is_zero_flag)
+        handle_zero_flag(info, 'X');
+    if (!info->is_minus_sign_flag && info->is_width)
+        handle_width(info, 'X');
+    if (info->is_pound_sign)
+        ft_putstr("0X");   
+    if (info->is_precision)
+        handle_precision(info, 'X');
+    ft_putstr(info->res); 
+    if (info->is_minus_sign_flag && info->is_width)
+        handle_width(info, 'X');   
 
     free(info->res);    
 }
 
 void handle_char(t_info *info, va_list va_arg_list)
 {
-    handle_lenght_modifier(info, va_arg_list, 'c');
-    
-    if (info->is_minus_sign_flag)
-    {
-        ft_putchar(info->fields.u_char_field);
-        if (info->is_width)
-            handle_width(info, 'c');
-    }
-    else
-    {
-        if (info->is_width)
-            handle_width(info, 'c');
-        ft_putchar(info->fields.u_char_field);
-    }    
+    handle_lenght_modifier(info, va_arg_list, 'c'); 
+
+    if (!info->is_minus_sign_flag && info->is_width)
+        handle_width(info, 'c');
+    ft_putchar(info->fields.u_char_field); 
+    if (info->is_minus_sign_flag && info->is_width)
+        handle_width(info, 'c');   
 }
 
 void handle_string(t_info *info, va_list va_arg_list)
 {
     handle_lenght_modifier(info, va_arg_list, 's');
 
-    if (info->is_minus_sign_flag)
-    {
-        if (info->is_precision)
-            handle_precision(info, 's');
-        ft_putstr(info->res);         
-        if (info->is_width)
-            handle_width(info, 's');
-    }
-    else
-    {
-        if (info->is_width)
-            handle_width(info, 's');
-        if (info->is_precision)
-            handle_precision(info, 's');
-        ft_putstr(info->res);   
-    }
+    if (!info->is_minus_sign_flag && info->is_width)
+        handle_width(info, 's');
+    if (info->is_precision)
+        handle_precision(info, 's');
+    ft_putstr(info->res);
+    if (info->is_minus_sign_flag && info->is_width)
+        handle_width(info, 's');
 }
 
 void handle_pointer(t_info *info, va_list va_arg_list)
@@ -502,20 +425,13 @@ void handle_pointer(t_info *info, va_list va_arg_list)
     info->fields.pointer_field = va_arg(va_arg_list, long long int);
     info->res = ft_dec_to_hex(info->fields.pointer_field, 0);
 
-    if (info->is_minus_sign_flag)
-    {
-        ft_putstr("0x");
-        ft_putstr(info->res);        
-        if (info->is_width)
-            handle_width(info, 'p');  
-    }
-    else
-    {
-        if (info->is_width)
-            handle_width(info, 'p');  
-        ft_putstr("0x");
-        ft_putstr(info->res);
-    }
+    if (!info->is_minus_sign_flag && info->is_width)
+        handle_width(info, 'p');  
+    ft_putstr("0x");
+    ft_putstr(info->res);
+    if (info->is_minus_sign_flag && info->is_width)
+        handle_width(info, 'p');  
+
     free(info->res);
 }
 
