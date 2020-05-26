@@ -45,3 +45,12 @@ void handle_j(t_info *info, va_list va_arg_list, int spec);
 void handle_z(t_info *info, va_list va_arg_list, int spec);
 void handle_no_len_mod(t_info *info, va_list va_arg_list, int spec);
 void handle_lenght_modifier(t_info *info, va_list va_arg_list, int spec);
+
+void handle_hex(t_info *info, va_list va_arg_list);
+void handle_heX(t_info *info, va_list va_arg_list);
+void handle_string(t_info *info, va_list va_arg_list);
+void handle_pointer(t_info *info, va_list va_arg_list);
+void handle_integer(t_info *info, va_list va_arg_list);
+void handle_octal(t_info *info, va_list va_arg_list);
+void handle_char(t_info *info, va_list va_arg_list);
+void handle_u_char(t_info *info, va_list va_arg_list);
