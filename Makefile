@@ -6,8 +6,8 @@ $(NAME): all
  
 all:
 	@make -C libft 									# go to libft directory and do make 
-	@$(CC) -c $(CFLAGS) ft_printf.c					# compile ft_printf.c 
-	@ar -rc $(NAME) ft_printf.o						# create a static library
+	@$(CC) -c $(CFLAGS) *.c							# compile *.c 
+	@ar -rc $(NAME) *.o								# create a static library
 	@echo "\033[32m$(NAME) built!\033[0m" 			# print "built" in green
 
 test:
