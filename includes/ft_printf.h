@@ -1,4 +1,4 @@
-#include "libft/src/libft.h"
+#include "../libft/src/libft.h"
 #include <stdarg.h>
 #include <stdbool.h>
 
@@ -16,6 +16,18 @@ typedef struct  s_info
     int zero_flag_val;
 
 }               t_info;
+
+typedef struct  s_call_function
+{
+    void    (*fct)(t_info *info, va_list va_arg_list);
+    char     spec;
+}               t_call_fucntion;
+
+typedef struct  s_len_modifiers
+{
+    void    (*fct)(t_info *info, va_list va_arg_list, int spec);
+    int     mod;
+}               t_len_modifiers;
 
 #define NO_MOD  0 
 #define MOD_H   1 
@@ -54,3 +66,9 @@ void handle_integer(t_info *info, va_list va_arg_list);
 void handle_octal(t_info *info, va_list va_arg_list);
 void handle_char(t_info *info, va_list va_arg_list);
 void handle_u_char(t_info *info, va_list va_arg_list);
+
+int check_flag(t_info *info, int flag);
+void check_width(t_info *info, const char *format, int *i);
+void check_prec(t_info *info, const char *format, int *i);
+int check_len_mod(t_info *info, int spec);
+int check_spec(t_info *info, va_list va_arg_list, char spec);

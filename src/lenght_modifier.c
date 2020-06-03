@@ -1,5 +1,19 @@
 #include "ft_printf.h"
 
+
+t_len_modifiers len_mod_table[] = 
+{
+    {handle_h, MOD_H},
+    {handle_hh, MOD_HH},
+    {handle_l, MOD_L},
+    {handle_ll, MOD_LL},
+    {handle_j, MOD_J},
+    {handle_z, MOD_Z},
+    {handle_no_len_mod, NO_MOD},
+    {NULL, -1}
+};
+
+
 void handle_h(t_info *info, va_list va_arg_list, int spec)
 {
     if (spec == 'd')
@@ -17,6 +31,7 @@ void handle_h(t_info *info, va_list va_arg_list, int spec)
         info->res = ft_dec_to_hex(info->ll_int_field, 1);
 }
 
+
 void handle_hh(t_info *info, va_list va_arg_list, int spec)
 {
     if (spec == 'd')
@@ -33,6 +48,7 @@ void handle_hh(t_info *info, va_list va_arg_list, int spec)
     else if (spec == 'X')
         info->res = ft_dec_to_hex(info->ll_int_field, 1);
 }
+
 
 void handle_l(t_info *info, va_list va_arg_list, int spec)
 {
@@ -56,6 +72,7 @@ void handle_l(t_info *info, va_list va_arg_list, int spec)
         // info->wchar_t_field = va_arg(va_arg_list, wchar_t *);
 }
 
+
 void handle_ll(t_info *info, va_list va_arg_list, int spec)
 {
     if (spec == 'd')
@@ -72,6 +89,7 @@ void handle_ll(t_info *info, va_list va_arg_list, int spec)
     else if (spec == 'X')
         info->res = ft_dec_to_hex(info->ll_int_field, 1);
 }
+
 
 void handle_j(t_info *info, va_list va_arg_list, int spec)
 {
@@ -90,6 +108,7 @@ void handle_j(t_info *info, va_list va_arg_list, int spec)
         info->res = ft_dec_to_hex(info->ll_int_field, 1);
 }
 
+
 void handle_z(t_info *info, va_list va_arg_list, int spec)
 {
     if (spec == 'o')
@@ -104,6 +123,7 @@ void handle_z(t_info *info, va_list va_arg_list, int spec)
     else if (spec == 'X')
         info->res = ft_dec_to_hex(info->ll_int_field, 1);
 }
+
 
 void handle_no_len_mod(t_info *info, va_list va_arg_list, int spec)
 {
@@ -125,23 +145,6 @@ void handle_no_len_mod(t_info *info, va_list va_arg_list, int spec)
         info->res = ft_strcpy(info->res, va_arg(va_arg_list, char *));
 }    
 
-typedef struct  s_len_modifiers
-{
-    void    (*fct)(t_info *info, va_list va_arg_list, int spec);
-    int     mod;
-}               t_len_modifiers;
-
-t_len_modifiers len_mod_table[] = 
-{
-    {handle_h, MOD_H},
-    {handle_hh, MOD_HH},
-    {handle_l, MOD_L},
-    {handle_ll, MOD_LL},
-    {handle_j, MOD_J},
-    {handle_z, MOD_Z},
-    {handle_no_len_mod, NO_MOD},
-    {NULL, -1}
-};
 
 void handle_lenght_modifier(t_info *info, va_list va_arg_list, int spec)
 {

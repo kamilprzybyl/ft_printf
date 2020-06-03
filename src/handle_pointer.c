@@ -1,6 +1,5 @@
 #include "ft_printf.h"
 
-
 void handle_pointer(t_info *info, va_list va_arg_list)
 {
     info->ll_int_field = va_arg(va_arg_list, long long int);

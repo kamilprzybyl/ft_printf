@@ -14,4 +14,5 @@ void handle_string(t_info *info, va_list va_arg_list)
     
     if ((info->flags & MINUS_SIGN) && info->width)
         handle_width(info, 's');
+    
 }
