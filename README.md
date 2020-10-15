@@ -4,10 +4,10 @@ The main goal of this project is to recode libc's printf function
 
 <br />
 
-## General
-1. Recode libc's printf function
+## About
+1. Recoded libc's printf function
 
-2. I have to manage the following conversions
+2. I have managed the following conversions
 - `s` & `S`
 - `p`
 - `d` & `D`
@@ -17,20 +17,20 @@ The main goal of this project is to recode libc's printf function
 - `x` & `X`
 - `c` & `C`
 
-3. I have to manage `%%`
+3. I have managed `%%`
 
-4. I have to manage the flags
+4. I have managed the flags
 - `#`
 - `0`
 - `-`
 - `+`
 - and space
 
-5. I have to manage the minimum field-width
+5. I have managed the minimum field-width
 
-6. I have to manage the precision
+6. I have managed the precision
 
-7. I have to manage the flags 
+7. I have managed the flags 
 - `hh`
 - `h`
 - `l`
