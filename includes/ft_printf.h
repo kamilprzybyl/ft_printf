@@ -1,3 +1,6 @@
+#ifndef _FT_PRINTF_H_
+#define _FT_PRINTF_H_
+
 #include "../libft/src/libft.h"
 #include <stdarg.h>
 #include <stdbool.h>
@@ -72,3 +75,5 @@ void check_width(t_info *info, const char *format, int *i);
 void check_prec(t_info *info, const char *format, int *i);
 int check_len_mod(t_info *info, int spec);
 int check_spec(t_info *info, va_list va_arg_list, char spec);
+
+#endif
