@@ -127,7 +127,7 @@ void handle_z(t_info *info, va_list va_arg_list, int spec)
 
 void handle_no_len_mod(t_info *info, va_list va_arg_list, int spec)
 {
-
+    
     if (spec == 'd' || spec == 'c')
         info->ll_int_field = va_arg(va_arg_list, int);
     else if (spec == 'o')

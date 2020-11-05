@@ -10,6 +10,7 @@ void reset_info(t_info *info)
     info->zero_flag_val = 0;
     info->len_mod = NO_MOD;
     info->flags = NO_FLAG;
+    info->res = malloc(sizeof(char) * 256); // 256 is random number - fix this
 }
 
 
