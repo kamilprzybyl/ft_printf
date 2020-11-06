@@ -1,4 +1,4 @@
-#include "../libft/src/libft.h"
+#include "../libft/includes/libft.h"
 #include <stdarg.h>
 #include <stdbool.h>
 
@@ -19,7 +19,7 @@ typedef struct  s_info
 
 typedef struct  s_call_function
 {
-    void    (*fct)(t_info *info, va_list va_arg_list);
+    void     (*fct)(t_info *info, va_list va_arg_list);
     char     spec;
 }               t_call_fucntion;
 
