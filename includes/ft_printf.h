@@ -1,7 +1,7 @@
 #ifndef _FT_PRINTF_H_
 #define _FT_PRINTF_H_
 
-#include "../libft/src/libft.h"
+#include "../Libft/includes/libft.h"
 #include <stdarg.h>
 #include <stdbool.h>
 

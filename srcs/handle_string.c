@@ -2,7 +2,7 @@
 
 
 void handle_string(t_info *info, va_list va_arg_list)
-{e
+{
     handle_lenght_modifier(info, va_arg_list, 's');
 
     if (!(info->flags & MINUS_SIGN) && info->width)
